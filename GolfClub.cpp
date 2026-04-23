@@ -1,4 +1,6 @@
 #include "GolfClub.h"
+#include <fstream>
+#include <sstream>
 
 GolfClub::GolfClub()
 {
@@ -154,4 +156,103 @@ void GolfClub::displayTeeTimes()
     {
         teeTimes[i]->display();
     }
+}
+
+void GolfClub::saveToFile()
+{
+    ofstream outFile("golfclub.txt");
+
+    if (!outFile)
+    {
+        cout << "Error opening file for writing" << endl;
+        return;
+    }
+
+    outFile << clubName << endl;
+    outFile << golfers.size() << endl;
+
+    for (int i = 0; i < golfers.size(); i++)
+    {
+        Member* m = dynamic_cast<Member*>(golfers[i]);
+        Guest* g = dynamic_cast<Guest*>(golfers[i]);
+
+        if (m != nullptr)
+        {
+            outFile << "MEMBER," << m->getName() << "," << m->getHandicap() << "," << m->getMemberID() << endl;
+        }
+        else if (g != nullptr)
+        {
+            outFile << "GUEST," << g->getName() << "," << g->getHandicap() << endl;
+        }
+    }
+
+    outFile << teeTimes.size() << endl;
+
+    for (int i = 0; i < teeTimes.size(); i++)
+    {
+        outFile << teeTimes[i]->getDay() << "," << teeTimes[i]->getTime() << endl;
+    }
+
+    outFile.close();
+    cout << "Data saved to file" << endl;
+}
+
+void GolfClub::loadFromFile()
+{
+    ifstream inFile("golfclub.txt");
+
+    if (!inFile)
+    {
+        cout << "No file found to load" << endl;
+        return;
+    }
+
+    string line;
+    getline(inFile, clubName);
+
+    int golferCount;
+    inFile >> golferCount;
+    inFile.ignore();
+
+    for (int i = 0; i < golferCount; i++)
+    {
+        getline(inFile, line);
+        stringstream ss(line);
+
+        string type, name, handicapStr, id;
+        getline(ss, type, ',');
+        getline(ss, name, ',');
+        getline(ss, handicapStr, ',');
+
+        int handicap = stoi(handicapStr);
+
+        if (type == "MEMBER")
+        {
+            getline(ss, id, ',');
+            golfers.push_back(new Member(name, handicap, id));
+        }
+        else if (type == "GUEST")
+        {
+            golfers.push_back(new Guest(name, handicap));
+        }
+    }
+
+    int teeTimeCount;
+    inFile >> teeTimeCount;
+    inFile.ignore();
+
+    for (int i = 0; i < teeTimeCount; i++)
+    {
+        getline(inFile, line);
+        stringstream ss(line);
+
+        string day, time;
+        getline(ss, day, ',');
+        getline(ss, time, ',');
+
+        teeTimes.push_back(new TeeTime(day, time));
+    }
+
+    inFile.close();
+    cout << "Data loaded from file" << endl;
 }

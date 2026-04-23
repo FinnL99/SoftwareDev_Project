@@ -37,6 +37,9 @@ public:
 
     void displayGolfers();
     void displayTeeTimes();
+
+    void saveToFile();
+    void loadFromFile();
 };
 
 #endif

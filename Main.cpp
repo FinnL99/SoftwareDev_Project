@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include "GolfClub.h"
 #include "Member.h"
 #include "Guest.h"
@@ -7,7 +8,7 @@
 
 using namespace std;
 
-// small helper to keep menu input simple
+// simple helper for menu choices
 int readChoice()
 {
     int choice;
@@ -16,14 +17,45 @@ int readChoice()
     return choice;
 }
 
+// helper to show tee times with numbers beside them
+void displayTeeTimesWithNumbers(GolfClub& club)
+{
+    cout << "\nAvailable Tee Times:" << endl;
+
+    vector<string> days = {"Monday", "Monday", "Tuesday", "Wednesday"};
+    vector<string> times = {"09:00", "10:00", "11:00", "12:00"};
+
+    for (int i = 0; i < days.size(); i++)
+    {
+        TeeTime* t = club.getTeeTime(days[i], times[i]);
+
+        if (t != nullptr)
+        {
+            cout << i + 1 << ". ";
+            t->display();
+        }
+    }
+}
+
+// helper to return tee time based on number selected
+TeeTime* getTeeTimeFromChoice(GolfClub& club, int choice)
+{
+    if (choice == 1) return club.getTeeTime("Monday", "09:00");
+    if (choice == 2) return club.getTeeTime("Monday", "10:00");
+    if (choice == 3) return club.getTeeTime("Tuesday", "11:00");
+    if (choice == 4) return club.getTeeTime("Wednesday", "12:00");
+
+    return nullptr;
+}
+
 int main()
 {
     GolfClub club("Skerries Golf Club");
 
-    // load previous data if file already exists
+    // load saved data if there is already a file there
     club.loadFromFile();
 
-    // if no tee times exist yet, create starter slots
+    // starter tee times only added if they do not already exist
     if (club.getTeeTime("Monday", "09:00") == nullptr)
     {
         club.addTeeTime(new TeeTime("Monday", "09:00"));
@@ -90,48 +122,44 @@ int main()
                 cout << "1. View tee times" << endl;
                 cout << "2. Book a tee time" << endl;
                 cout << "3. Remove yourself from a tee time" << endl;
-                cout << "4. Logout" << endl;
+                cout << "4. Edit your booking" << endl;
+                cout << "5. Logout" << endl;
                 cout << "Enter choice: ";
                 userChoice = readChoice();
 
                 if (userChoice == 1)
                 {
-                    // useful to display current state of bookings
-                    club.displayTeeTimes();
+                    displayTeeTimesWithNumbers(club);
                 }
                 else if (userChoice == 2)
                 {
-                    string day, time;
+                    int teeChoice;
 
-                    cout << "Enter day: ";
-                    getline(cin, day);
+                    // easier for the user than typing day/time every time
+                    displayTeeTimesWithNumbers(club);
+                    cout << "Select tee time number: ";
+                    teeChoice = readChoice();
 
-                    cout << "Enter time: ";
-                    getline(cin, time);
-
-                    TeeTime* t = club.getTeeTime(day, time);
+                    TeeTime* t = getTeeTimeFromChoice(club, teeChoice);
 
                     if (t != nullptr)
                     {
-                        // TeeTime class handles duplicate/full checks
                         t->addGolfer(currentUser);
                     }
                     else
                     {
-                        cout << "Tee time not found." << endl;
+                        cout << "Invalid tee time selection." << endl;
                     }
                 }
                 else if (userChoice == 3)
                 {
-                    string day, time;
+                    int teeChoice;
 
-                    cout << "Enter day: ";
-                    getline(cin, day);
+                    displayTeeTimesWithNumbers(club);
+                    cout << "Select tee time number to remove yourself from: ";
+                    teeChoice = readChoice();
 
-                    cout << "Enter time: ";
-                    getline(cin, time);
-
-                    TeeTime* t = club.getTeeTime(day, time);
+                    TeeTime* t = getTeeTimeFromChoice(club, teeChoice);
 
                     if (t != nullptr)
                     {
@@ -139,11 +167,47 @@ int main()
                     }
                     else
                     {
-                        cout << "Tee time not found." << endl;
+                        cout << "Invalid tee time selection." << endl;
+                    }
+                }
+                else if (userChoice == 4)
+                {
+                    int oldChoice, newChoice;
+
+                    // simple edit = remove from old slot then add to new slot
+                    displayTeeTimesWithNumbers(club);
+                    cout << "Select your current tee time number: ";
+                    oldChoice = readChoice();
+
+                    cout << "Select your new tee time number: ";
+                    newChoice = readChoice();
+
+                    TeeTime* oldTeeTime = getTeeTimeFromChoice(club, oldChoice);
+                    TeeTime* newTeeTime = getTeeTimeFromChoice(club, newChoice);
+
+                    if (oldTeeTime != nullptr && newTeeTime != nullptr)
+                    {
+                        if (oldTeeTime->removeGolfer(currentUser->getName()))
+                        {
+                            if (!newTeeTime->addGolfer(currentUser))
+                            {
+                                // if new booking fails, add them back to original slot
+                                oldTeeTime->addGolfer(currentUser);
+                                cout << "Could not update booking." << endl;
+                            }
+                        }
+                        else
+                        {
+                            cout << "You were not booked into that tee time." << endl;
+                        }
+                    }
+                    else
+                    {
+                        cout << "Invalid tee time selection." << endl;
                     }
                 }
 
-            } while (userChoice != 4);
+            } while (userChoice != 5);
         }
         else if (startChoice == 2)
         {
@@ -164,7 +228,7 @@ int main()
 
             if (regChoice == 1)
             {
-                // simple starter ID generation for now
+                // still simple ID generation at this stage
                 string newID = "M00" + to_string(rand() % 100);
 
                 if (club.addGolfer(new Member(name, handicap, newID)))
@@ -187,12 +251,12 @@ int main()
         }
         else if (startChoice == 3)
         {
-            club.displayTeeTimes();
+            displayTeeTimesWithNumbers(club);
         }
 
     } while (startChoice != 4);
 
-    // save data before exiting program
+    // save everything before closing
     club.saveToFile();
 
     cout << "Goodbye." << endl;

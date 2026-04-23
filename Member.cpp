@@ -5,12 +5,7 @@ Member::Member() : Golfer()
     memberID = "M000";
 }
 
-Member::Member(string name, int handicap, string id) : Golfer(name, handicap)
-{
-    memberID = id;
-}
-
-void Member::setMemberID(string id)
+Member::Member(string n, int h, string id) : Golfer(n, h)
 {
     memberID = id;
 }
@@ -20,9 +15,19 @@ string Member::getMemberID()
     return memberID;
 }
 
+void Member::setMemberID(string id)
+{
+    memberID = id;
+}
+
+string Member::getLoginKey()
+{
+    return memberID; // login uses ID
+}
+
 void Member::display()
 {
-    cout << "Member: " << getName()
-         << " | Handicap: " << getHandicap()
+    cout << "Member: " << name
+         << " | Handicap: " << handicap
          << " | ID: " << memberID << endl;
 }

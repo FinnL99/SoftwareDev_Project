@@ -14,25 +14,25 @@ GolfClub::GolfClub(string name)
 
 GolfClub::~GolfClub()
 {
-    for (int i = 0; i < golfers.size(); i++)
+    for (auto g : golfers)
     {
-        delete golfers[i];
+        delete g;
     }
 
-    for (int i = 0; i < teeTimes.size(); i++)
+    for (auto t : teeTimes)
     {
-        delete teeTimes[i];
+        delete t;
     }
-}
-
-void GolfClub::setClubName(string name)
-{
-    clubName = name;
 }
 
 string GolfClub::getClubName()
 {
     return clubName;
+}
+
+void GolfClub::setClubName(string name)
+{
+    clubName = name;
 }
 
 bool GolfClub::addGolfer(Golfer* g)
@@ -66,7 +66,9 @@ Golfer* GolfClub::getGolferById(string id)
 {
     for (int i = 0; i < golfers.size(); i++)
     {
+        // golfers vector stores base class pointers so dynamic_cast is used here
         Member* m = dynamic_cast<Member*>(golfers[i]);
+
         if (m != nullptr && m->getMemberID() == id)
         {
             return golfers[i];
@@ -81,6 +83,7 @@ Golfer* GolfClub::getGuestByName(string name)
     for (int i = 0; i < golfers.size(); i++)
     {
         Guest* g = dynamic_cast<Guest*>(golfers[i]);
+
         if (g != nullptr && g->getName() == name)
         {
             return golfers[i];
@@ -115,6 +118,7 @@ bool GolfClub::removeTeeTime(string day, string time)
         }
     }
 
+    cout << "Tee time not found" << endl;
     return false;
 }
 
@@ -124,12 +128,14 @@ bool GolfClub::editTeeTime(string oldDay, string oldTime, string newDay, string 
 
     if (t == nullptr)
     {
+        cout << "Tee time not found" << endl;
         return false;
     }
 
+    // stops duplicate tee times being created after edit
     if ((oldDay != newDay || oldTime != newTime) && getTeeTime(newDay, newTime) != nullptr)
     {
-        cout << "New tee time already exists" << endl;
+        cout << "Another tee time already exists with these details" << endl;
         return false;
     }
 
@@ -138,31 +144,40 @@ bool GolfClub::editTeeTime(string oldDay, string oldTime, string newDay, string 
     return true;
 }
 
-void GolfClub::displayGolfers()
-{
-    cout << "Golfers in " << clubName << ":" << endl;
-
-    for (int i = 0; i < golfers.size(); i++)
-    {
-        golfers[i]->display();
-    }
-}
-
 void GolfClub::displayTeeTimes()
 {
-    cout << "Tee times in " << clubName << ":" << endl;
-
     for (int i = 0; i < teeTimes.size(); i++)
     {
         teeTimes[i]->display();
     }
 }
 
-string GolfClub::generateMemberID()
+void GolfClub::displayTeeTimesWithIndex()
+{
+    cout << "\nAvailable Tee Times:" << endl;
+
+    for (int i = 0; i < teeTimes.size(); i++)
+    {
+        cout << i + 1 << ". ";
+        teeTimes[i]->display();
+    }
+}
+
+TeeTime* GolfClub::getTeeTimeByIndex(int index)
+{
+    // user will see list from 1, but vector still works from 0
+    if (index >= 0 && index < teeTimes.size())
+    {
+        return teeTimes[index];
+    }
+
+    return nullptr;
+}
+
+string GolfClub::generateNewMemberID()
 {
     int highest = 0;
 
-    // generate next member ID based on current members in vector
     for (int i = 0; i < golfers.size(); i++)
     {
         Member* m = dynamic_cast<Member*>(golfers[i]);
@@ -173,6 +188,7 @@ string GolfClub::generateMemberID()
 
             if (id.length() > 1 && id[0] == 'M')
             {
+                // remove the M and convert the rest to a number
                 int number = stoi(id.substr(1));
 
                 if (number > highest)
@@ -201,86 +217,45 @@ string GolfClub::generateMemberID()
 
 void GolfClub::saveToFile()
 {
-    ofstream outFile("golfclub.txt");
+    ofstream out("golfclub.txt");
 
-    if (!outFile)
+    for (auto g : golfers)
     {
-        cout << "Error opening file" << endl;
-        return;
-    }
-
-    outFile << clubName << endl;
-
-    outFile << golfers.size() << endl;
-
-    for (int i = 0; i < golfers.size(); i++)
-    {
-        Member* m = dynamic_cast<Member*>(golfers[i]);
-        Guest* g = dynamic_cast<Guest*>(golfers[i]);
+        Member* m = dynamic_cast<Member*>(g);
+        Guest* guest = dynamic_cast<Guest*>(g);
 
         if (m != nullptr)
         {
-            outFile << "MEMBER," << m->getName()
-                    << "," << m->getHandicap()
-                    << "," << m->getMemberID() << endl;
+            out << "MEMBER," << m->getName() << "," << m->getHandicap()
+                << "," << m->getMemberID() << endl;
         }
-        else if (g != nullptr)
+        else if (guest != nullptr)
         {
-            outFile << "GUEST," << g->getName()
-                    << "," << g->getHandicap() << endl;
+            out << "GUEST," << guest->getName() << "," << guest->getHandicap() << endl;
         }
     }
 
-    outFile << teeTimes.size() << endl;
-
-    for (int i = 0; i < teeTimes.size(); i++)
-    {
-        outFile << teeTimes[i]->getDay() << ","
-                << teeTimes[i]->getTime() << ",";
-
-        vector<Golfer*> booked = teeTimes[i]->getGolfers();
-
-        // save booked golfer names after the day/time
-        for (int j = 0; j < booked.size(); j++)
-        {
-            outFile << booked[j]->getName();
-
-            if (j < booked.size() - 1)
-            {
-                outFile << "|";
-            }
-        }
-
-        outFile << endl;
-    }
-
-    outFile.close();
-    cout << "Data saved (with bookings)" << endl;
+    out.close();
 }
 
 void GolfClub::loadFromFile()
 {
-    ifstream inFile("golfclub.txt");
+    ifstream in("golfclub.txt");
 
-    if (!inFile)
+    if (!in)
     {
-        cout << "No file found to load" << endl;
         return;
     }
 
     string line;
-    getline(inFile, clubName);
 
-    int golferCount;
-    inFile >> golferCount;
-    inFile.ignore();
-
-    for (int i = 0; i < golferCount; i++)
+    while (getline(in, line))
     {
-        getline(inFile, line);
+        // stringstream used to split text read from file
         stringstream ss(line);
 
         string type, name, handicapStr, id;
+
         getline(ss, type, ',');
         getline(ss, name, ',');
         getline(ss, handicapStr, ',');
@@ -298,54 +273,5 @@ void GolfClub::loadFromFile()
         }
     }
 
-    int teeTimeCount;
-    inFile >> teeTimeCount;
-    inFile.ignore();
-
-    for (int i = 0; i < teeTimeCount; i++)
-    {
-        getline(inFile, line);
-        stringstream ss(line);
-
-        string day, time, bookedNames;
-        getline(ss, day, ',');
-        getline(ss, time, ',');
-        getline(ss, bookedNames);
-
-        TeeTime* t = new TeeTime(day, time);
-        teeTimes.push_back(t);
-
-        // load golfer bookings back into the tee time
-        if (bookedNames != "")
-        {
-            stringstream bookedStream(bookedNames);
-            string golferName;
-
-            while (getline(bookedStream, golferName, '|'))
-            {
-                Golfer* foundGolfer = getGuestByName(golferName);
-
-                if (foundGolfer == nullptr)
-                {
-                    // if not guest, search members by name
-                    for (int j = 0; j < golfers.size(); j++)
-                    {
-                        if (golfers[j]->getName() == golferName)
-                        {
-                            foundGolfer = golfers[j];
-                            break;
-                        }
-                    }
-                }
-
-                if (foundGolfer != nullptr)
-                {
-                    t->addGolfer(foundGolfer);
-                }
-            }
-        }
-    }
-
-    inFile.close();
-    cout << "Data loaded from file" << endl;
+    in.close();
 }

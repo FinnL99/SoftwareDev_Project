@@ -1,27 +1,31 @@
-#ifndef _GOLFER_
-#define _GOLFER_
+#ifndef GOLFER_H
+#define GOLFER_H
 
 #include <string>
 #include <iostream>
 using namespace std;
 
+// base class (abstract) for Member and Guest
 class Golfer
 {
-private:
+protected:
     string name;
     int handicap;
 
 public:
     Golfer();
     Golfer(string name, int handicap);
+    virtual ~Golfer();
 
-    void setName(string);
     string getName();
+    void setName(string);
 
-    void setHandicap(int);
     int getHandicap();
+    void setHandicap(int);
 
-    void display();
+    // pure virtual functions (forces subclasses to implement these)
+    virtual string getLoginKey() = 0;
+    virtual void display() = 0;
 };
 
 #endif

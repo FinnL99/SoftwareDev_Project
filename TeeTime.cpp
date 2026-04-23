@@ -4,7 +4,7 @@ TeeTime::TeeTime()
 {
     day = "Unknown";
     time = "00:00";
-    maxPlayers = 4; // max 4 players per tee time (project requirement)
+    maxPlayers = 4; // max 4 players per slot (project requirement)
 }
 
 TeeTime::TeeTime(string d, string t)
@@ -46,16 +46,18 @@ int TeeTime::getNumberOfGolfers()
 
 vector<Golfer*> TeeTime::getGolfers()
 {
-    return golfers; // used when writing bookings to file
+    return golfers;
 }
 
 bool TeeTime::isFull()
 {
+    // compares current bookings to capacity
     return golfers.size() >= maxPlayers;
 }
 
 bool TeeTime::isGolferAlreadyBooked(string name)
 {
+    // basic vector traversal (learncpp / class notes)
     for (int i = 0; i < golfers.size(); i++)
     {
         if (golfers[i]->getName() == name)
@@ -68,14 +70,14 @@ bool TeeTime::isGolferAlreadyBooked(string name)
 
 bool TeeTime::addGolfer(Golfer* g)
 {
-    // check duplicate booking first
+    // check duplicate first
     if (isGolferAlreadyBooked(g->getName()))
     {
         cout << g->getName() << " already booked" << endl;
         return false;
     }
 
-    // check capacity (important edge case for testing)
+    // then check capacity
     if (isFull())
     {
         cout << "Sorry, tee time is full. Please select another." << endl;
@@ -104,7 +106,6 @@ void TeeTime::display()
     cout << "TeeTime: " << day << " at " << time
          << " (" << golfers.size() << "/" << maxPlayers << ")" << endl;
 
-    // display all booked golfers
     for (int i = 0; i < golfers.size(); i++)
     {
         golfers[i]->display();

@@ -1,15 +1,16 @@
 #include "Guest.h"
 
-Guest::Guest() : Golfer()
-{
-}
+Guest::Guest() : Golfer() {}
 
-Guest::Guest(string name, int handicap) : Golfer(name, handicap)
+Guest::Guest(string n, int h) : Golfer(n, h) {}
+
+string Guest::getLoginKey()
 {
+    return name;
 }
 
 void Guest::display()
 {
-    cout << "Guest: " << getName()
-         << " | Handicap: " << getHandicap() << endl;
+    cout << "Guest: " << name
+         << " | Handicap: " << handicap << endl;
 }

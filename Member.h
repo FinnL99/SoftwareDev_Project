@@ -1,10 +1,7 @@
-#ifndef _MEMBER_
-#define _MEMBER_
+#ifndef MEMBER_H
+#define MEMBER_H
 
 #include "Golfer.h"
-#include <string>
-#include <iostream>
-using namespace std;
 
 class Member : public Golfer
 {
@@ -13,11 +10,12 @@ private:
 
 public:
     Member();
-    Member(string name, int handicap, string memberID);
+    Member(string name, int handicap, string id);
 
-    void setMemberID(string);
     string getMemberID();
+    void setMemberID(string);
 
+    string getLoginKey(); // used for login
     void display();
 };
 

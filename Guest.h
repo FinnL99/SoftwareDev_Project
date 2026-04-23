@@ -1,5 +1,5 @@
-#ifndef _GUEST_
-#define _GUEST_
+#ifndef GUEST_H
+#define GUEST_H
 
 #include "Golfer.h"
 
@@ -9,6 +9,7 @@ public:
     Guest();
     Guest(string name, int handicap);
 
+    string getLoginKey(); // guests login with name
     void display();
 };
 

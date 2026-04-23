@@ -1,13 +1,13 @@
-#ifndef _GOLFCLUB_
-#define _GOLFCLUB_
+#ifndef GOLFCLUB_H
+#define GOLFCLUB_H
 
 #include <string>
-#include <iostream>
 #include <vector>
 #include "Golfer.h"
 #include "Member.h"
 #include "Guest.h"
 #include "TeeTime.h"
+
 using namespace std;
 
 class GolfClub
@@ -22,26 +22,27 @@ public:
     GolfClub(string name);
     ~GolfClub();
 
-    void setClubName(string name);
     string getClubName();
+    void setClubName(string name);
 
-    bool addGolfer(Golfer* g);
-    bool addTeeTime(TeeTime* t);
+    bool addGolfer(Golfer*);
+    bool addTeeTime(TeeTime*);
 
     Golfer* getGolferById(string id);
     Golfer* getGuestByName(string name);
-    TeeTime* getTeeTime(string day, string time);
 
+    TeeTime* getTeeTime(string day, string time);
     bool removeTeeTime(string day, string time);
     bool editTeeTime(string oldDay, string oldTime, string newDay, string newTime);
 
-    void displayGolfers();
     void displayTeeTimes();
+    void displayTeeTimesWithIndex();
+    TeeTime* getTeeTimeByIndex(int index);
+
+    string generateNewMemberID();
 
     void saveToFile();
     void loadFromFile();
-
-    string generateMemberID(); // improved member ID generation
 };
 
 #endif

@@ -12,19 +12,16 @@ Golfer::Golfer(string n, int h)
     handicap = h;
 }
 
-void Golfer::setName(string n)
-{
-    name = n;
-}
+Golfer::~Golfer() {}
 
 string Golfer::getName()
 {
     return name;
 }
 
-void Golfer::setHandicap(int h)
+void Golfer::setName(string n)
 {
-    handicap = h;
+    name = n;
 }
 
 int Golfer::getHandicap()
@@ -32,8 +29,7 @@ int Golfer::getHandicap()
     return handicap;
 }
 
-void Golfer::display()
+void Golfer::setHandicap(int h)
 {
-    cout << "Golfer: " << name
-         << " | Handicap: " << handicap << endl;
+    handicap = h;
 }

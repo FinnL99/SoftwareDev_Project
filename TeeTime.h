@@ -1,5 +1,5 @@
-#ifndef _TEETIME_
-#define _TEETIME_
+#ifndef TEETIME_H
+#define TEETIME_H
 
 #include <string>
 #include <iostream>
@@ -29,9 +29,10 @@ public:
     int getNumberOfGolfers();
 
     bool addGolfer(Golfer*);
+    bool removeGolfer(string name);
     bool isFull();
+    bool isGolferAlreadyBooked(string name);
 
     void display();
 };
-
-#endif
+#endif  

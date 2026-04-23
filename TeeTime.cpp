@@ -49,8 +49,27 @@ bool TeeTime::isFull()
     return golfers.size() >= maxPlayers;
 }
 
+bool TeeTime::isGolferAlreadyBooked(string name)
+{
+    for (int i = 0; i < golfers.size(); i++)
+    {
+        if (golfers[i]->getName() == name)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool TeeTime::addGolfer(Golfer* g)
 {
+    if (isGolferAlreadyBooked(g->getName()))
+    {
+        cout << g->getName() << " is already booked into this tee time" << endl;
+        return false;
+    }
+
     if (isFull())
     {
         cout << "Tee time is full" << endl;
@@ -62,9 +81,30 @@ bool TeeTime::addGolfer(Golfer* g)
     return true;
 }
 
+bool TeeTime::removeGolfer(string name)
+{
+    for (int i = 0; i < golfers.size(); i++)
+    {
+        if (golfers[i]->getName() == name)
+        {
+            golfers.erase(golfers.begin() + i);
+            cout << name << " removed from tee time" << endl;
+            return true;
+        }
+    }
+
+    cout << "Golfer not found in tee time" << endl;
+    return false;
+}
+
 void TeeTime::display()
 {
     cout << "TeeTime: " << day << " at " << time
          << " | Booked: " << golfers.size()
          << "/" << maxPlayers << endl;
+
+    for (int i = 0; i < golfers.size(); i++)
+    {
+        golfers[i]->display();
+    }
 }

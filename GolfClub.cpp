@@ -4,7 +4,7 @@
 
 GolfClub::GolfClub()
 {
-    clubName = "Unknown Club";
+    clubName = "N/A";
 }
 
 GolfClub::GolfClub(string name)
@@ -164,11 +164,14 @@ void GolfClub::saveToFile()
 
     if (!outFile)
     {
-        cout << "Error opening file for writing" << endl;
+        cout << "Error opening file" << endl;
         return;
     }
 
+    // save club name
     outFile << clubName << endl;
+
+    // save golfers
     outFile << golfers.size() << endl;
 
     for (int i = 0; i < golfers.size(); i++)
@@ -178,23 +181,43 @@ void GolfClub::saveToFile()
 
         if (m != nullptr)
         {
-            outFile << "MEMBER," << m->getName() << "," << m->getHandicap() << "," << m->getMemberID() << endl;
+            outFile << "MEMBER," << m->getName()
+                    << "," << m->getHandicap()
+                    << "," << m->getMemberID() << endl;
         }
         else if (g != nullptr)
         {
-            outFile << "GUEST," << g->getName() << "," << g->getHandicap() << endl;
+            outFile << "GUEST," << g->getName()
+                    << "," << g->getHandicap() << endl;
         }
     }
 
+    // save tee times INCLUDING bookings
     outFile << teeTimes.size() << endl;
 
     for (int i = 0; i < teeTimes.size(); i++)
     {
-        outFile << teeTimes[i]->getDay() << "," << teeTimes[i]->getTime() << endl;
+        outFile << teeTimes[i]->getDay() << ","
+                << teeTimes[i]->getTime() << ",";
+
+        vector<Golfer*> booked = teeTimes[i]->getGolfers();
+
+        // writing each golfer booked into this slot
+        for (int j = 0; j < booked.size(); j++)
+        {
+            outFile << booked[j]->getName();
+
+            if (j < booked.size() - 1)
+            {
+                outFile << "|"; // separator between names
+            }
+        }
+
+        outFile << endl;
     }
 
     outFile.close();
-    cout << "Data saved to file" << endl;
+    cout << "Data saved (with bookings)" << endl;
 }
 
 void GolfClub::loadFromFile()

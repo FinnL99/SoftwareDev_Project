@@ -4,7 +4,7 @@ TeeTime::TeeTime()
 {
     day = "Unknown";
     time = "00:00";
-    maxPlayers = 4;
+    maxPlayers = 4; // max 4 players per tee time (project requirement)
 }
 
 TeeTime::TeeTime(string d, string t)
@@ -44,6 +44,11 @@ int TeeTime::getNumberOfGolfers()
     return golfers.size();
 }
 
+vector<Golfer*> TeeTime::getGolfers()
+{
+    return golfers; // used when writing bookings to file
+}
+
 bool TeeTime::isFull()
 {
     return golfers.size() >= maxPlayers;
@@ -58,26 +63,26 @@ bool TeeTime::isGolferAlreadyBooked(string name)
             return true;
         }
     }
-
     return false;
 }
 
 bool TeeTime::addGolfer(Golfer* g)
 {
+    // check duplicate booking first
     if (isGolferAlreadyBooked(g->getName()))
     {
-        cout << g->getName() << " is already booked into this tee time" << endl;
+        cout << g->getName() << " already booked" << endl;
         return false;
     }
 
+    // check capacity (important edge case for testing)
     if (isFull())
     {
-        cout << "Tee time is full" << endl;
+        cout << "Sorry, tee time is full. Please select another." << endl;
         return false;
     }
 
     golfers.push_back(g);
-    cout << g->getName() << " added to tee time" << endl;
     return true;
 }
 
@@ -88,21 +93,18 @@ bool TeeTime::removeGolfer(string name)
         if (golfers[i]->getName() == name)
         {
             golfers.erase(golfers.begin() + i);
-            cout << name << " removed from tee time" << endl;
             return true;
         }
     }
-
-    cout << "Golfer not found in tee time" << endl;
     return false;
 }
 
 void TeeTime::display()
 {
     cout << "TeeTime: " << day << " at " << time
-         << " | Booked: " << golfers.size()
-         << "/" << maxPlayers << endl;
+         << " (" << golfers.size() << "/" << maxPlayers << ")" << endl;
 
+    // display all booked golfers
     for (int i = 0; i < golfers.size(); i++)
     {
         golfers[i]->display();

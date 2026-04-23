@@ -28,6 +28,9 @@ public:
     int getMaxPlayers();
     int getNumberOfGolfers();
 
+    // returns list of golfers booked into this slot (needed for file saving later)
+    vector<Golfer*> getGolfers();
+
     bool addGolfer(Golfer*);
     bool removeGolfer(string name);
     bool isFull();
@@ -35,4 +38,5 @@ public:
 
     void display();
 };
-#endif  
+
+#endif

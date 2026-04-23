@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 #include "Golfer.h"
+#include "Member.h"
+#include "Guest.h"
 #include "TeeTime.h"
 using namespace std;
 
@@ -23,7 +25,13 @@ public:
     string getClubName();
 
     void addGolfer(Golfer*);
-    void addTeeTime(TeeTime*);
+    bool addTeeTime(TeeTime*);
+
+    Golfer* getGolferById(string);
+    Golfer* getGuestByName(string);
+    TeeTime* getTeeTime(string, string);
+
+    bool removeTeeTime(string, string);
 
     void displayGolfers();
     void displayTeeTimes();

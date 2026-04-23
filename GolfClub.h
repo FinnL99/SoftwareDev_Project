@@ -40,6 +40,8 @@ public:
 
     void saveToFile();
     void loadFromFile();
+
+    string generateMemberID(); // improved member ID generation
 };
 
 #endif

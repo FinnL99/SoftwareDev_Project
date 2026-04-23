@@ -229,7 +229,7 @@ int main()
             if (regChoice == 1)
             {
                 // still simple ID generation at this stage
-                string newID = "M00" + to_string(rand() % 100);
+                string newID = club.generateMemberID(); // changed from random IDs
 
                 if (club.addGolfer(new Member(name, handicap, newID)))
                 {

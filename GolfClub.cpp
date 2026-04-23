@@ -10,6 +10,19 @@ GolfClub::GolfClub(string name)
     clubName = name;
 }
 
+GolfClub::~GolfClub()
+{
+    for (int i = 0; i < golfers.size(); i++)
+    {
+        delete golfers[i];
+    }
+
+    for (int i = 0; i < teeTimes.size(); i++)
+    {
+        delete teeTimes[i];
+    }
+}
+
 void GolfClub::setClubName(string name)
 {
     clubName = name;
@@ -20,9 +33,19 @@ string GolfClub::getClubName()
     return clubName;
 }
 
-void GolfClub::addGolfer(Golfer* g)
+bool GolfClub::addGolfer(Golfer* g)
 {
+    for (int i = 0; i < golfers.size(); i++)
+    {
+        if (golfers[i]->getName() == g->getName())
+        {
+            cout << "Golfer already exists" << endl;
+            return false;
+        }
+    }
+
     golfers.push_back(g);
+    return true;
 }
 
 bool GolfClub::addTeeTime(TeeTime* t)
@@ -84,12 +107,33 @@ bool GolfClub::removeTeeTime(string day, string time)
     {
         if (teeTimes[i]->getDay() == day && teeTimes[i]->getTime() == time)
         {
+            delete teeTimes[i];
             teeTimes.erase(teeTimes.begin() + i);
             return true;
         }
     }
 
     return false;
+}
+
+bool GolfClub::editTeeTime(string oldDay, string oldTime, string newDay, string newTime)
+{
+    TeeTime* t = getTeeTime(oldDay, oldTime);
+
+    if (t == nullptr)
+    {
+        return false;
+    }
+
+    if ((oldDay != newDay || oldTime != newTime) && getTeeTime(newDay, newTime) != nullptr)
+    {
+        cout << "New tee time already exists" << endl;
+        return false;
+    }
+
+    t->setDay(newDay);
+    t->setTime(newTime);
+    return true;
 }
 
 void GolfClub::displayGolfers()

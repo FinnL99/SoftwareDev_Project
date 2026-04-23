@@ -20,18 +20,20 @@ private:
 public:
     GolfClub();
     GolfClub(string name);
+    ~GolfClub();
 
-    void setClubName(string);
+    void setClubName(string name);
     string getClubName();
 
-    void addGolfer(Golfer*);
-    bool addTeeTime(TeeTime*);
+    bool addGolfer(Golfer* g);
+    bool addTeeTime(TeeTime* t);
 
-    Golfer* getGolferById(string);
-    Golfer* getGuestByName(string);
-    TeeTime* getTeeTime(string, string);
+    Golfer* getGolferById(string id);
+    Golfer* getGuestByName(string name);
+    TeeTime* getTeeTime(string day, string time);
 
-    bool removeTeeTime(string, string);
+    bool removeTeeTime(string day, string time);
+    bool editTeeTime(string oldDay, string oldTime, string newDay, string newTime);
 
     void displayGolfers();
     void displayTeeTimes();

@@ -1,0 +1,6 @@
+CLUB|Skerries Golf Club
+GOLFER|MEMBER|tre|432|M001
+TEETIME|Monday|09:00|
+TEETIME|Monday|10:00|
+TEETIME|Tuesday|11:00|M001
+TEETIME|Wednesday|12:00|

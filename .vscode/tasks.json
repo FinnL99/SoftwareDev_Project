@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build golfapp",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "Main.cpp",
+                "GolfClub.cpp",
+                "Golfer.cpp",
+                "Member.cpp",
+                "Guest.cpp",
+                "TeeTime.cpp",
+                "-std=c++11",
+                "-g",
+                "-o",
+                "golfapp.exe"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}

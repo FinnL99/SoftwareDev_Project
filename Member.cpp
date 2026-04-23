@@ -1,13 +1,16 @@
+// This file contains the implementation code for the Member class
 #include "Member.h"
 
 Member::Member() : Golfer()
 {
-    memberID = "M000";
+    memberID = "";
+    cout << "calling default constructor for Member" << endl;
 }
 
 Member::Member(string n, int h, string id) : Golfer(n, h)
 {
     memberID = id;
+    cout << "calling three parameter constructor for Member" << endl;
 }
 
 string Member::getMemberID()
@@ -22,12 +25,13 @@ void Member::setMemberID(string id)
 
 string Member::getLoginKey()
 {
-    return memberID; // login uses ID
+    // members log in using ID rather than name
+    return memberID;
 }
 
 void Member::display()
 {
-    cout << "Member: " << name
-         << " | Handicap: " << handicap
-         << " | ID: " << memberID << endl;
+    cout << "Member: " << getName()
+         << " has handicap " << getHandicap()
+         << " and member ID: " << getMemberID() << endl;
 }

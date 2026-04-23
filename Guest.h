@@ -7,9 +7,10 @@ class Guest : public Golfer
 {
 public:
     Guest();
-    Guest(string name, int handicap);
+    Guest(string n, int h);
+    ~Guest();
 
-    string getLoginKey(); // guests login with name
+    string getLoginKey();
     void display();
 };
 

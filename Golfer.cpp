@@ -1,35 +1,24 @@
-#include "Golfer.h"
+// This file contains the implementation code for the Guest class
+#include "Guest.h"
 
-Golfer::Golfer()
+Guest::Guest() : Golfer()
 {
-    name = "Unknown";
-    handicap = 0;
+    cout << "calling default constructor for Guest" << endl;
 }
 
-Golfer::Golfer(string n, int h)
+Guest::Guest(string n, int h) : Golfer(n, h)
 {
-    name = n;
-    handicap = h;
+    cout << "calling parameter constructor for Guest" << endl;
 }
 
-Golfer::~Golfer() {}
-
-string Golfer::getName()
+string Guest::getLoginKey()
 {
-    return name;
+    // guests do not have IDs, so name is used as login key
+    return getName();
 }
 
-void Golfer::setName(string n)
+void Guest::display()
 {
-    name = n;
-}
-
-int Golfer::getHandicap()
-{
-    return handicap;
-}
-
-void Golfer::setHandicap(int h)
-{
-    handicap = h;
+    cout << "Guest: " << getName()
+         << " has handicap " << getHandicap() << endl;
 }

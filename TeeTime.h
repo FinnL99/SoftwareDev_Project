@@ -1,5 +1,6 @@
-#ifndef TEETIME_H
-#define TEETIME_H
+// file containing interface for TeeTime class
+#ifndef _TEETIME_
+#define _TEETIME_
 
 #include <string>
 #include <iostream>
@@ -10,33 +11,32 @@ using namespace std;
 class TeeTime
 {
 private:
-    string day;
-    string time;
-    vector<Golfer*> golfers;
-    int maxPlayers;
+    string bookingDay;
+    string bookingTime;
+    vector<Golfer*> golfersBooked;
+    const int maxPlayers;
 
 public:
     TeeTime();
-    TeeTime(string day, string time);
+    TeeTime(string bookingDay, string bookingTime);
 
-    void setDay(string);
-    string getDay();
+    string getBookingDay();
+    void setBookingDay(string);
 
-    void setTime(string);
-    string getTime();
+    string getBookingTime();
+    void setBookingTime(string);
 
     int getMaxPlayers();
-    int getNumberOfGolfers();
-
-    vector<Golfer*> getGolfers(); // used for saving to file
-
-    bool addGolfer(Golfer*);
-    bool removeGolfer(string name);
+    int getBookedCount();
 
     bool isFull();
-    bool isGolferAlreadyBooked(string name);
+    bool isGolferAlreadyBooked(string);
 
+    bool addGolferToTeeTime(Golfer*);
+    bool removeGolferFromTeeTime(string);
     void display();
+
+    vector<Golfer*> getGolfersBooked();
 };
 
-#endif
+#endif /* _TEETIME_ */

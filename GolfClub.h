@@ -1,13 +1,14 @@
-#ifndef GOLFCLUB_H
-#define GOLFCLUB_H
+// file containing interface for GolfClub class
+#ifndef _GOLFCLUB_
+#define _GOLFCLUB_
 
 #include <string>
+#include <iostream>
 #include <vector>
 #include "Golfer.h"
 #include "Member.h"
 #include "Guest.h"
 #include "TeeTime.h"
-
 using namespace std;
 
 class GolfClub
@@ -19,30 +20,28 @@ private:
 
 public:
     GolfClub();
-    GolfClub(string name);
+    GolfClub(string);
     ~GolfClub();
 
     string getClubName();
-    void setClubName(string name);
+    void setClubName(string);
 
     bool addGolfer(Golfer*);
+    Golfer* getGolferById(string);
+    Golfer* getGuestByName(string);
+
     bool addTeeTime(TeeTime*);
-
-    Golfer* getGolferById(string id);
-    Golfer* getGuestByName(string name);
-
-    TeeTime* getTeeTime(string day, string time);
-    bool removeTeeTime(string day, string time);
-    bool editTeeTime(string oldDay, string oldTime, string newDay, string newTime);
-
+    bool removeTeeTime(string, string);
+    bool editTeeTime(string, string, string, string);
+    TeeTime* getTeeTime(string, string);
     void displayTeeTimes();
-    void displayTeeTimesWithIndex();
-    TeeTime* getTeeTimeByIndex(int index);
 
+    void displayTeeTimesWithIndex();
+    TeeTime* getTeeTimeByIndex(int);
     string generateNewMemberID();
 
     void saveToFile();
     void loadFromFile();
 };
 
-#endif
+#endif /* _GOLFCLUB_ */

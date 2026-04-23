@@ -1,37 +1,38 @@
+// This file contains the implementation code for the TeeTime class
 #include "TeeTime.h"
 
-TeeTime::TeeTime()
+TeeTime::TeeTime() : maxPlayers(4)
 {
-    day = "Unknown";
-    time = "00:00";
-    maxPlayers = 4; // max 4 players per slot (project requirement)
+    bookingDay = "Unknown";
+    bookingTime = "Unknown";
+    cout << "calling default constructor for TeeTime" << endl;
 }
 
-TeeTime::TeeTime(string d, string t)
+TeeTime::TeeTime(string day, string time) : maxPlayers(4)
 {
-    day = d;
-    time = t;
-    maxPlayers = 4;
+    bookingDay = day;
+    bookingTime = time;
+    cout << "calling two parameter constructor for TeeTime" << endl;
 }
 
-void TeeTime::setDay(string d)
+string TeeTime::getBookingDay()
 {
-    day = d;
+    return bookingDay;
 }
 
-string TeeTime::getDay()
+void TeeTime::setBookingDay(string day)
 {
-    return day;
+    bookingDay = day;
 }
 
-void TeeTime::setTime(string t)
+string TeeTime::getBookingTime()
 {
-    time = t;
+    return bookingTime;
 }
 
-string TeeTime::getTime()
+void TeeTime::setBookingTime(string time)
 {
-    return time;
+    bookingTime = time;
 }
 
 int TeeTime::getMaxPlayers()
@@ -39,28 +40,24 @@ int TeeTime::getMaxPlayers()
     return maxPlayers;
 }
 
-int TeeTime::getNumberOfGolfers()
+int TeeTime::getBookedCount()
 {
-    return golfers.size();
-}
-
-vector<Golfer*> TeeTime::getGolfers()
-{
-    return golfers;
+    return golfersBooked.size();
 }
 
 bool TeeTime::isFull()
 {
-    // compares current bookings to capacity
-    return golfers.size() >= maxPlayers;
+    // compares current number booked to max capacity of 4
+    return golfersBooked.size() >= maxPlayers;
 }
 
-bool TeeTime::isGolferAlreadyBooked(string name)
+bool TeeTime::isGolferAlreadyBooked(string loginKey)
 {
-    // basic vector traversal (learncpp / class notes)
-    for (int i = 0; i < golfers.size(); i++)
+    // simple linear search through vector
+    // this is basic vector traversal from notes / learncpp examples
+    for (int i = 0; i < golfersBooked.size(); i++)
     {
-        if (golfers[i]->getName() == name)
+        if (golfersBooked[i]->getLoginKey() == loginKey)
         {
             return true;
         }
@@ -68,46 +65,57 @@ bool TeeTime::isGolferAlreadyBooked(string name)
     return false;
 }
 
-bool TeeTime::addGolfer(Golfer* g)
+bool TeeTime::addGolferToTeeTime(Golfer* g)
 {
-    // check duplicate first
-    if (isGolferAlreadyBooked(g->getName()))
+    // check duplicate booking first
+    if (isGolferAlreadyBooked(g->getLoginKey()))
     {
-        cout << g->getName() << " already booked" << endl;
+        cout << g->getName() << " is already booked into this tee time" << endl;
         return false;
     }
 
-    // then check capacity
+    // then check if the slot has reached capacity
     if (isFull())
     {
         cout << "Sorry, tee time is full. Please select another." << endl;
         return false;
     }
 
-    golfers.push_back(g);
+    // add base class pointer into vector so both Member and Guest can be stored
+    golfersBooked.push_back(g);
+    cout << g->getName() << " added to tee time successfully" << endl;
     return true;
 }
 
-bool TeeTime::removeGolfer(string name)
+bool TeeTime::removeGolferFromTeeTime(string loginKey)
 {
-    for (int i = 0; i < golfers.size(); i++)
+    for (int i = 0; i < golfersBooked.size(); i++)
     {
-        if (golfers[i]->getName() == name)
+        if (golfersBooked[i]->getLoginKey() == loginKey)
         {
-            golfers.erase(golfers.begin() + i);
+            golfersBooked.erase(golfersBooked.begin() + i);
+            cout << "Golfer removed from tee time successfully" << endl;
             return true;
         }
     }
+
+    cout << "Golfer not found in this tee time" << endl;
     return false;
 }
 
 void TeeTime::display()
 {
-    cout << "TeeTime: " << day << " at " << time
-         << " (" << golfers.size() << "/" << maxPlayers << ")" << endl;
+    cout << "Tee Time: " << getBookingDay() << " at " << getBookingTime() << endl;
+    cout << "Booked golfers: " << getBookedCount() << "/" << getMaxPlayers() << endl;
 
-    for (int i = 0; i < golfers.size(); i++)
+    for (int i = 0; i < golfersBooked.size(); i++)
     {
-        golfers[i]->display();
+        golfersBooked[i]->display();
     }
+}
+
+vector<Golfer*> TeeTime::getGolfersBooked()
+{
+    // returning vector here makes saving bookings to file easier later
+    return golfersBooked;
 }
